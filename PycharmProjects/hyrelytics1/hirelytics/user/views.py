@@ -3,6 +3,10 @@ from django.contrib import messages
 from .forms import UserRegisterForm
 # Create your views here.
 def home(request):
+    return render(request,'home.html')
+def login(request):
+    return render(request,'login.html')
+def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
@@ -12,6 +16,4 @@ def home(request):
             return redirect('login')
     else:
         form = UserRegisterForm()
-    return render(request, 'home.html', {'form': form})
-def login(request):
-    return render(request,'login.html')
+    return render(request, 'register.html', {'form': form})
