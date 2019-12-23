@@ -1,11 +1,25 @@
 from django.shortcuts import render , redirect
 from django.contrib import messages
 from .forms import UserRegisterForm
+from django.contrib.auth.models import auth
 # Create your views here.
 def home(request):
     return render(request,'home.html')
 def login(request):
-    return render(request,'login.html')
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = auth.authenticate(username=username, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            return redirect('home')
+        else:
+            messages.info(request, 'Invalid Credentials')
+            return redirect('login')
+    else:
+        return render(request, 'login.html')
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -17,3 +31,6 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
+def logout(request):
+    auth.logout(request)
+    return redirect('/')
